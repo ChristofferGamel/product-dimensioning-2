@@ -1,8 +1,9 @@
 from flask import Flask, Response, make_response
-from src.model.contour import Contoured as Contour
+
 from cam import Picture
-
-
+from contour import Contoured
+from triangulate import Triangulate
+from main import Mask 
 
 app = Flask(__name__)
 
@@ -12,18 +13,12 @@ def hello_world():
     return "hello world \n"
 
 
-@app.route("/image")
+@app.route('/get-dimensions')
 def image():
-    cam_0 = Picture.picture(0)
-    cam_1 = Picture.picture(1)
+    mask = Mask()
+    result = mask.get_dimensions()
 
-    contour_0 = Contour(cam_0)
-    contour_1 = Contour(cam_1)
-
-    print(contour_0.properties())
-    print(contour_1.properties())
-
-    return "something \n"
+    return result
 
 
 if __name__ == "__main__":

@@ -10,7 +10,7 @@ class Picture():
         controls = {"AnalogueGain": 1.2, 
                     "Brightness": 0.08,
                     "Sharpness":3,
-                    "AwbMode":5
+                    "AwbMode":5,
                     }
         config = picam0.create_preview_configuration(main={"size": (int(2304*0.75), int(1296*0.75))}, controls=controls)
         config = picam1.create_preview_configuration(main={"size": (int(2304*0.75), int(1296*0.75))}, controls=controls)
