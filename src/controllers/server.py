@@ -20,6 +20,13 @@ def image():
 
     return result
 
+@app.route('/testing')
+def testing():
+    mask = facades.DimensionsFacade()
+    result = mask.get_dimensions(testing=True)
+
+    return result
+
 def start_server():
     app.run(threaded=True)
 

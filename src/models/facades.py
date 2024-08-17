@@ -1,4 +1,3 @@
-# Packages
 import cv2
 import numpy as np
 from picamera2 import Picamera2
@@ -17,22 +16,20 @@ class PicturesFacade():
         cam_0, cam_1 = self.cam.picture()
         pictures = {"cam_0":cam_0, "cam_1":cam_1}
         return pictures
-        
-
 
 class ContourFacade():
     def __init__(self) -> None:
         pass
 
-    def apply_contour(self, pictures):
+    def apply_contour(self, pictures, testing):
         image_0 = pictures['cam_0']
         image_1 = pictures['cam_1']
 
         left = image_0
         right = image_1
 
-        left_image =  Contoured(left)
-        right_image = Contoured(right)
+        left_image =  Contoured(left, testing)
+        right_image = Contoured(right, testing)
 
         left_image.contoured()
         right_image.contoured()
@@ -52,7 +49,6 @@ class TriangulateFacade():
         width, depth, height = self.triangulate.object_size(dist, left_properties, right_properties)
         return width, depth, height
 
-
 class DimensionsFacade():
     def __init__(self) -> None:
         self.time = time.time()
@@ -60,9 +56,9 @@ class DimensionsFacade():
         self.contour_facade = ContourFacade()
         self.triangulate_facade = TriangulateFacade()
 
-    def get_dimensions(self):
+    def get_dimensions(self, testing=False):
         pictures = self.pictures_facade.take_pictures()
-        left_properties, right_properties = self.contour_facade.apply_contour(pictures)
+        left_properties, right_properties = self.contour_facade.apply_contour(pictures, testing)
         w, d, h = self.triangulate_facade.triangulate_dimensions(left_properties, right_properties)
 
         dimensions_dictionairy = {"width":w,"depth":d,"height":h}
