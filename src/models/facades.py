@@ -28,8 +28,8 @@ class ContourFacade():
         left = image_0
         right = image_1
 
-        left_image =  Contoured(left, testing)
-        right_image = Contoured(right, testing)
+        left_image =  Contoured(left, testing, "left")
+        right_image = Contoured(right, testing, "right")
 
         left_image.contoured()
         right_image.contoured()

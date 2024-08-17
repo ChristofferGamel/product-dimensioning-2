@@ -4,21 +4,25 @@ import numpy as np
 from rembg import remove
 import math
 
+import inspect
 import time
 
 def save_images_wrapper(cls):
+    """Class decorator to wrap image processing functions with saving."""
     original_methods = {}
-
+    
     def create_wrapper(method):
+        """Helper function to create a wrapper for the method."""
         def wrapper(self, *args, **kwargs):
             image = method(self, *args, **kwargs)
             timestamp = time.strftime("%H%M%S")
-
+            
             if(not isinstance(image, np.ndarray)):
                 return image
 
             if self.testing:
-                cv2.imwrite(f"./tests/test_images/{method.__name__}_{timestamp}.jpg", image)
+                print("Saving image from method: ", method.__name__)
+                cv2.imwrite(f"./tests/wrapper_test_images/{method.__name__}_{self.file_name}.jpg", image)
             return image
         if hasattr(method, '__doc__'):
             wrapper.__doc__ = method.__doc__
@@ -33,7 +37,7 @@ def save_images_wrapper(cls):
 
 @save_images_wrapper
 class Contoured():
-    def __init__(self, image, testing) -> None:
+    def __init__(self, image, testing, file_name=None) -> None:
         # Image properties
         self.image = image
         self.alpha = 1.45           # contrast
@@ -41,7 +45,9 @@ class Contoured():
         self.blocksize = 9          # thresholding
         self.C = 5                  # thresholding
 
+        # Testing properties
         self.testing = testing
+        self.file_name = file_name
 
         self.image_height = self.image.shape[0]
         self.image_width = self.image.shape[1]
@@ -55,18 +61,21 @@ class Contoured():
     
     def contrast(self, image):
         contrast = cv2.convertScaleAbs(image, alpha=self.alpha, beta=self.beta)
+        print ("Contrasted, return type: ", contrast.dtype)
         return contrast
-
+        
     def remove_bg(self, image):
         removed_bg = remove(image)
+        print ("Removed background, return type: ", removed_bg.dtype)
         return removed_bg
-
+    
     def thresholding(self, image):
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         gray_8bit = cv2.convertScaleAbs(gray)
         th2 = cv2.adaptiveThreshold(gray_8bit, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, self.blocksize, self.C)
+        print ("Thresholding, return type: ", th2.dtype)
         return th2
-
+    
     def extreme_points(self, binary_image):
         # Find the contours of the object
         contours, hierarchy = cv2.findContours(binary_image, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
@@ -151,6 +160,8 @@ class Contoured():
             raise Exception("No contours found")
         
         draw = self.draw_points_box(self.image, y1, y2, x1, x2)
+
+        print ("Contoured, return type: ", draw.dtype)
 
         return draw
     
