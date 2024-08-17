@@ -27,13 +27,13 @@ class ContourFacade():
     def apply_contour(self, pictures):
         image_0 = pictures['cam_0']
         image_1 = pictures['cam_1']
-        
+
         left = image_0
         right = image_1
-        
+
         left_image =  Contoured(left)
         right_image = Contoured(right)
-        
+
         left_image.contoured()
         right_image.contoured()
 
@@ -41,7 +41,7 @@ class ContourFacade():
         right = right_image.properties()
 
         return left, right
-    
+
 class TriangulateFacade():
     def __init__(self) -> None:
         self.triangulate = Triangulate()
@@ -51,7 +51,7 @@ class TriangulateFacade():
         dist = self.dist
         width, depth, height = self.triangulate.object_size(dist, left_properties, right_properties)
         return width, depth, height
-    
+
 
 class DimensionsFacade():
     def __init__(self) -> None:

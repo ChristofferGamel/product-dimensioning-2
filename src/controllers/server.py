@@ -2,7 +2,7 @@ from flask import Flask, Response, make_response
 
 import sys
 sys.path.append('/home/chris/Desktop/product-dimensioning-2/src/')
-from models import main
+from models import facades
 
 
 app = Flask(__name__)
@@ -15,7 +15,7 @@ def hello_world():
 
 @app.route('/get-dimensions')
 def image():
-    mask = main.DimensionsFacade()
+    mask = facades.DimensionsFacade()
     result = mask.get_dimensions()
 
     return result
