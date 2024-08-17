@@ -21,7 +21,6 @@ def save_images_wrapper(cls):
                 return image
 
             if self.testing:
-                print("Saving image from method: ", method.__name__)
                 cv2.imwrite(f"./tests/wrapper_test_images/{method.__name__}_{self.file_name}.jpg", image)
             return image
         if hasattr(method, '__doc__'):
@@ -61,19 +60,16 @@ class Contoured():
     
     def contrast(self, image):
         contrast = cv2.convertScaleAbs(image, alpha=self.alpha, beta=self.beta)
-        print ("Contrasted, return type: ", contrast.dtype)
         return contrast
         
     def remove_bg(self, image):
         removed_bg = remove(image)
-        print ("Removed background, return type: ", removed_bg.dtype)
         return removed_bg
     
     def thresholding(self, image):
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         gray_8bit = cv2.convertScaleAbs(gray)
         th2 = cv2.adaptiveThreshold(gray_8bit, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, self.blocksize, self.C)
-        print ("Thresholding, return type: ", th2.dtype)
         return th2
     
     def extreme_points(self, binary_image):
@@ -108,13 +104,17 @@ class Contoured():
     
     def draw_points_box(self, original_image, x1, y1, x2, y2):
         copy = original_image.copy()
+        # Draw lines through the middle
+        cv2.line(copy, (self.image_width//2, 0), (self.image_width//2, self.image_height), (255, 0, 0), 2)
+        cv2.line(copy, (0, self.image_height//2), (self.image_width, self.image_height//2), (255, 0, 0), 2)
         return cv2.rectangle(copy, (x1, y1), (x2, y2), (0, 0, 255), 3) 
-    
+
     def deg_to_rad(self, deg):
         return((deg * math.pi)/180)
+
     def rad_to_deg(self, rad):
         return(rad*(180/math.pi))
-    
+
     def angle(self, point, fov, image_width):
         if(point == image_width/2): # Division by zero prevention
             return 0
@@ -131,7 +131,7 @@ class Contoured():
         else:
             return 90 - angle_deg
 
-    
+
     def properties(self):
         dict = {"image_width":self.image_width, 
                 "image_height":self.image_height,
@@ -160,8 +160,6 @@ class Contoured():
             raise Exception("No contours found")
         
         draw = self.draw_points_box(self.image, y1, y2, x1, x2)
-
-        print ("Contoured, return type: ", draw.dtype)
 
         return draw
     

@@ -24,7 +24,7 @@ class Picture():
         self.picam1.configure(config1)
 
     def picture(self):
-        # led.on()
+        self.led.on()
 
         self.picam0.start()
         self.picam1.start()
@@ -32,7 +32,7 @@ class Picture():
         org_image0 = self.picam0.capture_image()
         org_image1 = self.picam1.capture_image()
 
-        # led.off()
+        self.led.off()
         self.picam0.close()
         self.picam1.close()
 
