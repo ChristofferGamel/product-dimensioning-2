@@ -25,7 +25,6 @@ class Contoured():
         return self.string
 
     def contrast(self, image):
-        print(type(image))
         contrast = cv2.convertScaleAbs(image, alpha=self.alpha, beta=self.beta)
         return contrast
     

@@ -1,9 +1,9 @@
 from flask import Flask, Response, make_response
 
-from cam import Picture
-from contour import Contoured
-from triangulate import Triangulate
-from main import Mask 
+import sys
+sys.path.append('/home/chris/Desktop/product-dimensioning-2/src/')
+from models import main
+
 
 app = Flask(__name__)
 
@@ -15,10 +15,13 @@ def hello_world():
 
 @app.route('/get-dimensions')
 def image():
-    mask = Mask()
+    mask = main.DimensionsFacade()
     result = mask.get_dimensions()
 
     return result
+
+def start_server():
+    app.run(threaded=True)
 
 
 if __name__ == "__main__":
